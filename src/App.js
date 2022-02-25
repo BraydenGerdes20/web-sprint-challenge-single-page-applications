@@ -1,6 +1,6 @@
 import React from "react";
 import { Switch, Link, Route } from 'react-router-dom'
-import pizzaForm from './components/pizzaForm';
+import PizzaForm from './components/PizzaForm';
 
 
 
@@ -9,7 +9,7 @@ const App = () => {
     <div className="App">
       <header>
           <Link to='/'>Home</Link>
-          <Link to='/pizza'>Make the pizza</Link>
+          <Link to='/pizza' id="order-pizza">Make the pizza</Link>
       </header>
       <Switch>
         <Route exact path='/'>
@@ -17,7 +17,7 @@ const App = () => {
           <p>You can remove this code and create your own header</p>
         </Route>
         <Route path='/pizza'>
-          <pizzaForm />
+          <PizzaForm />
         </Route>
       </Switch>
     </div>
