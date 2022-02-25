@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
 
-const PizzaForm = () => {
+const PizzaForm = (props) => {
+    const { errors } = props
+    const { orderSubmit } = props
+
     const { model } = useParams()
 
 
@@ -23,11 +26,11 @@ const PizzaForm = () => {
 
     const submitForm= (e) => {
         e.preventDefault()
-
+        orderSubmit(form)
     }
 
     useEffect(()=>{
-        console.log(form)
+        // console.log(form)
     }, [form])
     
    
@@ -40,6 +43,7 @@ const PizzaForm = () => {
             <label>
                 <input type='text' name='name' id='name-input' value={form.name} onChange={formChange} />
             </label>
+            <p>{errors.name}</p>
             </div>
             <div className="pizzaSize">
                 <h2>Enter your size pizza you would like</h2>
