@@ -1,25 +1,51 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
+import * as yup from 'yup';
+
+const initialForm = {
+    name: '',
+    size: '',
+    topping1: false,
+    topping2: false,
+    topping3: false,
+    topping4: false,
+    topping5: false,
+    topping6: false,
+    special: '',
+}
 
 const PizzaForm = (props) => {
-    const { errors } = props
     const { orderSubmit } = props
 
     const { model } = useParams()
 
-
-    const [form, setForm] = useState({
-        name: '',
-        size: '',
-        topping1: false,
-        topping2: false,
-        topping3: false,
-        topping4: false,
-        topping5: false,
-        topping6: false,
-        special: '',
+    const formSchema = yup.object().shape({
+        name: yup.string().min(2, 'name must be more than 2 characters long')
     })
+
+    const [error, setError] = useState({
+        name: ''
+    })
+    const[disabled, setDisabled] = useState(true)
+
+    const [form, setForm] = useState(initialForm)
+
+    const formValidate = (e) => {
+        yup.reach(formSchema, e.target.name)
+        .validate(
+            e.target.type === 'checkbox' ? e.target.checked : e.target.value
+        )
+        .then(() =>
+            setError({...error, [e.target.name]: ''})
+        )
+        .catch((error)=>{
+            setError({...error, [e.target.name]: error.errors[0]})
+        })
+
+    }
+
     const formChange = (e) => {
+        formValidate(e)
         const value = e.target.type === 'chechbox' ? e.target.checked : e.target.value
         setForm({...form, [e.target.name]:value, [e.target.size]:value, [e.target.special]:value})
     }
@@ -27,10 +53,13 @@ const PizzaForm = (props) => {
     const submitForm= (e) => {
         e.preventDefault()
         orderSubmit(form)
+        setForm(initialForm)
     }
 
     useEffect(()=>{
-        // console.log(form)
+        formSchema.isValid(form).then((valid)=> {
+            setDisabled(!valid)
+        })
     }, [form])
     
    
@@ -43,7 +72,7 @@ const PizzaForm = (props) => {
             <label>
                 <input type='text' name='name' id='name-input' value={form.name} onChange={formChange} />
             </label>
-            <p>{errors.name}</p>
+            <p>{error.name}</p>
             </div>
             <div className="pizzaSize">
                 <h2>Enter your size pizza you would like</h2>
@@ -83,9 +112,9 @@ const PizzaForm = (props) => {
             <label>Onion 
                 <input type='checkbox' name='topping5' checked={form.topping5} onChange={formChange}/>
             </label>
-            <lable>Black olives
+            <label>Black olives
                 <input type='checkbox' name='topping6' checked={form.topping6} onChange={formChange}/>
-            </lable>
+            </label>
             </div>
             <div className="specialRequests">
                 <h2>Do you have any special requests?</h2>
@@ -93,7 +122,7 @@ const PizzaForm = (props) => {
                 <input type='text' name='special' id='special-text' value={form.special} onChange={formChange} />
             </label>
             </div>
-            <button type="submit" id='order-button'>Submit your order</button>
+            <button type="submit" disabled={disabled} id='order-button'>Submit your order</button>
 
         </form>
         </article>)
