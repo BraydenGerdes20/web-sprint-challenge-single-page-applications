@@ -1,66 +1,51 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useParams } from 'react-router-dom';
-import * as yup from 'yup';
 
-const initialForm = {
-    name: '',
-    size: '',
-    topping1: false,
-    topping2: false,
-    topping3: false,
-    topping4: false,
-    topping5: false,
-    topping6: false,
-    special: '',
-}
+
+
 
 const PizzaForm = (props) => {
-    const { orderSubmit } = props
-
+    const { orderSubmit, errors, change } = props
     const { model } = useParams()
+    const { name, size, topping1, topping2, topping3, topping4, topping5, topping6, special} =props.value
 
-    const formSchema = yup.object().shape({
-        name: yup.string().min(2, 'name must be more than 2 characters long')
-    })
-
-    const [error, setError] = useState({
-        name: ''
-    })
-    const[disabled, setDisabled] = useState(true)
-
-    const [form, setForm] = useState(initialForm)
-
-    const formValidate = (e) => {
-        yup.reach(formSchema, e.target.name)
-        .validate(
-            e.target.type === 'checkbox' ? e.target.checked : e.target.value
-        )
-        .then(() =>
-            setError({...error, [e.target.name]: ''})
-        )
-        .catch((error)=>{
-            setError({...error, [e.target.name]: error.errors[0]})
-        })
-
+    const onChange = (e) => {
+        const { name, value, checked, type } = e.target;
+        const newVal = type === 'checkedbox' ? checked : value
+        change(name, newVal)
     }
 
-    const formChange = (e) => {
-        formValidate(e)
-        const value = e.target.type === 'chechbox' ? e.target.checked : e.target.value
-        setForm({...form, [e.target.name]:value, [e.target.size]:value, [e.target.special]:value})
-    }
+    // const formSchema = yup.object().shape({
+    //     name: yup.string().trim().required('name is required').min(2, 'name must be more than 2 characters long')
+    // })
+
+    // const [error, setError] = useState({
+    //     name: ''
+    // })
+    
+
+    
+
+    // const formValidate = (e) => {
+    //     yup.reach(formSchema, e.target.name)
+    //     .validate(
+    //         e.target.type === 'checkbox' ? e.target.checked : e.target.value
+    //     )
+    //     .then(() =>
+    //         setError({...error, [e.target.name]: ''})
+    //     )
+    //     .catch((error)=>{
+    //         setError({...error, [e.target.name]: error.errors[0]})
+    //     })
+
+    // }
+
 
     const submitForm= (e) => {
         e.preventDefault()
-        orderSubmit(form)
-        setForm(initialForm)
+        orderSubmit()
     }
 
-    useEffect(()=>{
-        formSchema.isValid(form).then((valid)=> {
-            setDisabled(!valid)
-        })
-    }, [form])
     
    
     return(
@@ -70,14 +55,14 @@ const PizzaForm = (props) => {
             <div className="yourName">
                 <h2>Enter your name</h2>
             <label>
-                <input type='text' name='name' id='name-input' value={form.name} onChange={formChange} />
+                <input type='text' name='name' id='name-input' value={name} onChange={onChange} />
             </label>
-            <p>{error.name}</p>
+            <p>{errors.name}</p>
             </div>
             <div className="pizzaSize">
                 <h2>Enter your size pizza you would like</h2>
             <label>
-                <select id='size-dropdown' name='size' value={form.size} onChange={formChange} >
+                <select id='size-dropdown' name='size' value={size} onChange={onChange} >
                     <option value=''>- Select size -</option>
                     <option value='10 inch'>small (10 in)</option>
                     <option value='12 inch'>medium (12 in)</option>
@@ -91,38 +76,38 @@ const PizzaForm = (props) => {
             <label>Pepperoni
                 <input type='checkbox' 
                 name='topping1' 
-                checked={form.topping1} 
-                onChange={formChange}/>
+                checked={topping1} 
+                onChange={onChange}/>
             </label>
             <label>Mushroom
                 <input type='checkbox' 
                 name='topping2' 
-                checked={form.topping2} 
-                onChange={formChange}/> 
+                checked={topping2} 
+                onChange={onChange}/> 
             </label>
             <label>Extra cheese
                 <input type='checkbox' 
                 name='topping3' 
-                checked={form.topping3} 
-                onChange={formChange}/>
+                checked={topping3} 
+                onChange={onChange}/>
             </label>
             <label>Sausage
-                <input type='checkbox' name='topping4' checked={form.topping4} onChange={formChange}/>
+                <input type='checkbox' name='topping4' checked={topping4} onChange={onChange}/>
             </label>
             <label>Onion 
-                <input type='checkbox' name='topping5' checked={form.topping5} onChange={formChange}/>
+                <input type='checkbox' name='topping5' checked={topping5} onChange={onChange}/>
             </label>
             <label>Black olives
-                <input type='checkbox' name='topping6' checked={form.topping6} onChange={formChange}/>
+                <input type='checkbox' name='topping6' checked={topping6} onChange={onChange}/>
             </label>
             </div>
             <div className="specialRequests">
                 <h2>Do you have any special requests?</h2>
             <label>
-                <input type='text' name='special' id='special-text' value={form.special} onChange={formChange} />
+                <input type='text' name='special' id='special-text' value={special} onChange={onChange} />
             </label>
             </div>
-            <button type="submit" disabled={disabled} id='order-button'>Submit your order</button>
+            <button type="submit" id='order-button'>Submit your order</button>
 
         </form>
         </article>)

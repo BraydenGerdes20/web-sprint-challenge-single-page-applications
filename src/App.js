@@ -1,20 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { Switch, Link, Route } from 'react-router-dom'
 import PizzaForm from './components/PizzaForm';
+import schema from './validate/formSchema';
+import * as yup from 'yup';
 
+const initialErrors = {
+  name: '',
+}
+const initialFormValues = {
+  name: '',
+  size: '',
+  topping1: false,
+  topping2: false,
+  topping3: false,
+  topping4: false,
+  topping5: false,
+  topping6: false,
+  special: '',
+}
 
 const App = () => {
 
-  const [orders, setOrders] = useState([])
-
+   const [orders, setOrders] = useState([])
+  const [formErrors, setFormErrors] = useState(initialErrors)
+  const [formValues, setFormValues] = useState(initialFormValues)
 
   const orderSubmit = (newOrder) => {
     setOrders([...orders, newOrder])
   }
-
-  useEffect(()=>{
-    // console.log(orders)
-  },[orders])
+  const validate =(name, value) =>{
+    yup.reach(schema, name)
+    .validate(value)
+    .then(()=> setFormErrors({...formErrors, [name]: ''}))
+    .catch(err => setFormErrors({...formErrors, [name]: err.errors[0] }))
+  }
+ const handleChange = (name, value)=>{
+     setFormValues({...formValues, [name]: value})
+    validate(name, value);
+  }
 
   return (
     <div className="App">
@@ -29,7 +52,10 @@ const App = () => {
         </Route>
         <Route path='/pizza'>
           <PizzaForm  
+            value={formValues}
+            change={handleChange}
             orderSubmit={orderSubmit}
+            errors={formErrors}
           />
         </Route>
       </Switch>
