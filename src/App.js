@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Switch, Link, Route } from 'react-router-dom'
 import PizzaForm from './components/PizzaForm';
 import schema from './validate/formSchema';
@@ -21,7 +21,7 @@ const initialFormValues = {
 
 const App = () => {
 
-   const [orders, setOrders] = useState([])
+  const [orders, setOrders] = useState([])
   const [formErrors, setFormErrors] = useState(initialErrors)
   const [formValues, setFormValues] = useState(initialFormValues)
 
@@ -29,7 +29,7 @@ const App = () => {
     setOrders([...orders, newOrder])
   }
   const validate =(name, value) =>{
-    yup.reach(schema, name)
+    yup.object(schema, name)
     .validate(value)
     .then(()=> setFormErrors({...formErrors, [name]: ''}))
     .catch(err => setFormErrors({...formErrors, [name]: err.errors[0] }))
@@ -47,8 +47,8 @@ const App = () => {
       </header>
       <Switch>
         <Route exact path='/'>
-          <h1>Lambda Eats</h1>
-          <p>You can remove this code and create your own header</p>
+          <h1>BloomTech Eats</h1>
+          <p>AHHHHHHHHHHHHHHHHHHH DON'T TOUCH MAH PIZZA</p>
         </Route>
         <Route path='/pizza'>
           <PizzaForm  

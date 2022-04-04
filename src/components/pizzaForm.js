@@ -1,5 +1,8 @@
 import React from "react";
 import { useParams } from 'react-router-dom';
+// import * as yup from 'yup';
+// import formSchema from "../validate/formSchema";
+// import formValidate from "./validate/"
 
 
 
@@ -27,7 +30,7 @@ const PizzaForm = (props) => {
     
 
     // const formValidate = (e) => {
-    //     yup.reach(formSchema, e.target.name)
+    //     yup.object(formSchema, e.target.name)
     //     .validate(
     //         e.target.type === 'checkbox' ? e.target.checked : e.target.value
     //     )
